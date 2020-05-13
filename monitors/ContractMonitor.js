@@ -60,8 +60,10 @@ class ContractMonitor {
     // Get the latest liquidation information.
     let latestLiquidationEvents = this.empEventClient.getAllLiquidationEvents();
 
-    // Get liquidation events that are newer than the last block number we've seen
-    let newLiquidationEvents = latestLiquidationEvents.filter(event => event.blockNumber > this.lastDisputeBlockNumber);
+    // Get liquidation events that are newer than the last block number we've seen.
+    let newLiquidationEvents = latestLiquidationEvents.filter(
+      event => event.blockNumber > this.lastLiquidationBlockNumber
+    );
 
     for (let event of newLiquidationEvents) {
       // Sample message:
