@@ -74,7 +74,7 @@ function ActiveRequests({ votingAccount, votingGateway }) {
   const encryptedVoteEvents = useCacheEvents(
     "Voting",
     "EncryptedVote",
-    useMemo(() => ({ filter: { voter: votingAccount, roundId: currentRoundId }, fromBlock: 0 }), [
+    useMemo(() => ({ filter: { voter: votingAccount, roundId: currentRoundId }, fromBlock: 10092209 }), [
       votingAccount,
       currentRoundId
     ])
