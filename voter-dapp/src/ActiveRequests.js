@@ -133,16 +133,17 @@ function ActiveRequests({ votingAccount, votingGateway }) {
     for (const ev of encryptedVoteEvents) {
       encryptedVoteMap[toPriceRequestKey(ev.returnValues.identifier, ev.returnValues.time)] =
         ev.returnValues.encryptedVote;
+      voteStatuses.push({ committedValue: ev.returnValues.encryptedVote });
     }
-    for (const request of pendingRequests) {
-      voteStatuses.push({ committedValue: encryptedVoteMap[toPriceRequestKey(request.identifier, request.time)] });
-    }
+    // for (const request of pendingRequests) {
+    //   voteStatuses.push({ committedValue: encryptedVoteMap[toPriceRequestKey(request.identifier, request.time)] });
+    // }
   }
 
   const subsequentFetchComplete =
     initialFetchComplete &&
     encryptedVoteEvents &&
-    voteStatuses.length === pendingRequests.length &&
+    voteStatuses.length >= pendingRequests.length &&
     proposals &&
     proposals.every(prop => prop.proposal !== undefined);
   // Future hook calls that depend on `voteStatuses` should use `voteStatusesStringified` in their dependencies array
@@ -195,6 +196,9 @@ function ActiveRequests({ votingAccount, votingGateway }) {
       const currentVotes = await Promise.all(
         voteStatuses.map(async (voteStatus, index) => {
           if (voteStatus.committedValue) {
+            console.log(
+              await decryptMessage(decryptionKeys[account][currentRoundId].privateKey, voteStatus.committedValue)
+            );
             return JSON.parse(
               await decryptMessage(decryptionKeys[account][currentRoundId].privateKey, voteStatus.committedValue)
             );
@@ -203,7 +207,7 @@ function ActiveRequests({ votingAccount, votingGateway }) {
           }
         })
       );
-      if (!didCancel) {
+      if (false) {
         setDecryptedCommits(currentVotes);
       }
     }
