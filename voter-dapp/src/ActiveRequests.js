@@ -133,7 +133,11 @@ function ActiveRequests({ votingAccount, votingGateway }) {
     for (const ev of encryptedVoteEvents) {
       encryptedVoteMap[toPriceRequestKey(ev.returnValues.identifier, ev.returnValues.time)] =
         ev.returnValues.encryptedVote;
-      voteStatuses.push({ committedValue: ev.returnValues.encryptedVote });
+      voteStatuses.push({
+        committedValue: ev.returnValues.encryptedVote,
+        identifier: ev.returnValues.identifier,
+        time: ev.returnValues.time
+      });
     }
     // for (const request of pendingRequests) {
     //   voteStatuses.push({ committedValue: encryptedVoteMap[toPriceRequestKey(request.identifier, request.time)] });
@@ -196,8 +200,23 @@ function ActiveRequests({ votingAccount, votingGateway }) {
       const currentVotes = await Promise.all(
         voteStatuses.map(async (voteStatus, index) => {
           if (voteStatus.committedValue) {
-            console.log(
+            let json = JSON.parse(
               await decryptMessage(decryptionKeys[account][currentRoundId].privateKey, voteStatus.committedValue)
+            );
+            console.log(
+              "decrypted message:",
+              await decryptMessage(decryptionKeys[account][currentRoundId].privateKey, voteStatus.committedValue)
+            );
+            console.log(
+              "hash:",
+              computeVoteHash({
+                price: json.price,
+                salt: json.salt,
+                account: votingAccount,
+                time: voteStatus.time,
+                roundId: currentRoundId,
+                identifier: voteStatus.identifier
+              })
             );
             return JSON.parse(
               await decryptMessage(decryptionKeys[account][currentRoundId].privateKey, voteStatus.committedValue)
