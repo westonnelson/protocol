@@ -6,6 +6,8 @@ const LedgerWalletProvider = require("@umaprotocol/truffle-ledger-provider");
 const MetaMaskTruffleProvider = require("./MetaMaskTruffleProvider.js");
 require("dotenv").config();
 
+const argv = require("minimist")(process.argv.slice(), { string: ["account_offset"] });
+
 // Fallback to a public mnemonic to prevent exceptions
 const mnemonic = process.env.MNEMONIC
   ? process.env.MNEMONIC
@@ -59,7 +61,8 @@ function addPublicNetwork(networks, name, networkId) {
   // Ledger has changed their standard derivation path since this library was created, so we must override the default one.
   const ledgerOptions = {
     networkId: networkId,
-    path: "44'/60'/0'/0/0"
+    path: "44'/60'/0'/0/0",
+    accountsOffset: argv.account_offset
   };
 
   // Normal ledger wallet network.
@@ -70,7 +73,8 @@ function addPublicNetwork(networks, name, networkId) {
 
   // The default derivation path matches the "legacy" ledger account in Ledger Live.
   const legacyLedgerOptions = {
-    networkId: networkId
+    networkId: networkId,
+    accountsOffset: argv.account_offset
   };
 
   // Legacy ledger wallet network.
