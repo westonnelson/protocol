@@ -62,7 +62,7 @@ function addPublicNetwork(networks, name, networkId) {
   const ledgerOptions = {
     networkId: networkId,
     path: "44'/60'/0'/0/0",
-    accountsOffset: argv.account_offset
+    accountsOffset: argv.account_offset ? parseInt(argv.account_offset) : undefined
   };
 
   // Normal ledger wallet network.
@@ -74,7 +74,7 @@ function addPublicNetwork(networks, name, networkId) {
   // The default derivation path matches the "legacy" ledger account in Ledger Live.
   const legacyLedgerOptions = {
     networkId: networkId,
-    accountsOffset: argv.account_offset
+    accountsOffset: argv.account_offset ? parseInt(argv.account_offset) : undefined
   };
 
   // Legacy ledger wallet network.
