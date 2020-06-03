@@ -33,6 +33,14 @@ class ExpiringMultiPartyClient {
   // result this function will return positions that are undercollateralized due to too little collateral or a withdrawal
   // that, if passed, would make the position undercollateralized.
   getUnderCollateralizedPositions = tokenRedemptionValue => {
+    if (!tokenRedemptionValue) {
+      this.logger.debug({
+        at: "ExpiringMultiPartyClient",
+        message: "Invalid params for getUnderCollateralizedPositions",
+        tokenRedemptionValue
+      });
+      return [];
+    }
     return this.positions.filter(position => {
       const collateralNetWithdrawal = this.web3.utils
         .toBN(position.amountCollateral)
