@@ -104,8 +104,7 @@ contract Liquidatable is PricelessPositionManager {
         uint256 indexed liquidationId,
         uint256 tokensOutstanding,
         uint256 lockedCollateral,
-        uint256 liquidatedCollateral,
-        uint256 liquidationTime
+        uint256 liquidatedCollateral
     );
     event LiquidationDisputed(
         address indexed sponsor,
@@ -122,12 +121,7 @@ contract Liquidatable is PricelessPositionManager {
         uint256 liquidationId,
         bool disputeSucceeded
     );
-    event LiquidationWithdrawn(
-        address indexed caller,
-        uint256 withdrawalAmount,
-        Status indexed liquidationStatus,
-        uint256 settlementPrice
-    );
+    event LiquidationWithdrawn(address indexed caller, uint256 withdrawalAmount, Status indexed liquidationStatus);
 
     /****************************************
      *              MODIFIERS               *
@@ -301,8 +295,7 @@ contract Liquidatable is PricelessPositionManager {
             liquidationId,
             tokensLiquidated.rawValue,
             lockedCollateral.rawValue,
-            liquidatedCollateral.rawValue,
-            getCurrentTime()
+            liquidatedCollateral.rawValue
         );
 
         // Destroy tokens
@@ -461,12 +454,7 @@ contract Liquidatable is PricelessPositionManager {
         // Decrease the total collateral held in liquidatable by the amount withdrawn.
         amountWithdrawn = _removeCollateral(rawLiquidationCollateral, withdrawalAmount);
 
-        emit LiquidationWithdrawn(
-            msg.sender,
-            amountWithdrawn.rawValue,
-            liquidation.state,
-            liquidation.settlementPrice.rawValue
-        );
+        emit LiquidationWithdrawn(msg.sender, amountWithdrawn.rawValue, liquidation.state);
 
         // Transfer amount withdrawn from this contract to the caller.
         collateralCurrency.safeTransfer(msg.sender, amountWithdrawn.rawValue);
