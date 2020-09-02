@@ -26,7 +26,8 @@ const { getAbi, getAddress } = require("@umaprotocol/core");
 /**
  * @notice Continuously attempts to monitor contract positions and reports based on monitor modules.
  * @param {Object} logger Module responsible for sending logs.
- * @param {String} address Contract address of the EMP.
+ * @param {Object} web3 Web3 module
+ * @param {String} empAddress Contract address of the EMP.
  * @param {Number} pollingDelay The amount of seconds to wait between iterations. If set to 0 then running in serverless
  *     mode which will exit after the loop.
  * @param {Number} errorRetries The number of times the execution loop will re-try before throwing if an error occurs.
